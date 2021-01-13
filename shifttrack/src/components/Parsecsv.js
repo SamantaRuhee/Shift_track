@@ -1,68 +1,52 @@
 import React from 'react';
-import { Button } from 'react-bootstrap';
 import Papa from 'papaparse';
-
-const generateTableHead=(table, data)=> {
-    var thead = table.createTHead();
-    let row = thead.insertRow();
-    for (let key of data) {
-      let th = document.createElement('th');
-      let text = document.createTextNode(key);
-      th.appendChild(text);
-      row.appendChild(th);
-    }
+class Parsecsv extends React.Component {
+  constructor() {
+    super();
+    this.state = {
+      csvfile: undefined
+    };
+    this.updateData = this.updateData.bind(this);
   }
 
-const generateTableRows=(table, data)=> {
-    let newRow = table.insertRow(-1);
-    data.map((row, index) => {
-      let newCell = newRow.insertCell();
-      let newText = document.createTextNode(row);
-      newCell.appendChild(newText);
+  handleChange = event => {
+    this.setState({
+      csvfile: event.target.files[0]
     });
-  }
+  };
 
-async function getData() {
-    const response = await fetch('volunteer_attendance_data.csv');
-    const data = await response.text();
+  importCSV = () => {
+    const { csvfile } = this.state;
+    Papa.parse(csvfile, {
+      complete: this.updateData,
+      header: true
+    });
+  };
+
+  updateData(result) {
+    var data = result.data;
     console.log(data);
   }
 
-function Parsecsv() {
-  return (
-    <div className="App">
-
-      <header className="App-header">
-        Read CSV
-      </header>
-      <input type="file" id="upload-csv" accept=".csv"></input>
-      <Button
-        variant="primary"
-        onClick={getData()}
-          /*Papa.parse(document.getElementById('upload-csv').files[0],
-            {
-              download: true,
-              header: true,
-              complete: function (results) {
-                console.log(results);
-                let i = 0;
-                results.data.map((data, index) => {
-                  if (i === 0) {
-                    let table = document.getElementById('tbl-data');
-                    generateTableHead(table, data);
-                  } else {
-                    let table = document.getElementById('tbl-data');
-                    generateTableRows(table, data);
-                  }
-                  i++;
-                });
-              }
-            })}*/
-      >
-        Read
-    </Button>
-    </div>
-  );
+  render() {
+    return (
+      <div className="App">
+        <h2>Import your CSV File!</h2>
+        <input
+          className="csv-input"
+          type="file"
+          ref={input => {
+            this.filesInput = input;
+          }}
+          name="file"
+          placeholder={null}
+          onChange={this.handleChange}
+        />
+        <p/>
+        <button onClick={this.importCSV}> Import</button>
+      </div>
+    );
+  }
 }
 
 export default Parsecsv;

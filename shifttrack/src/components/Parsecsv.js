@@ -25,7 +25,17 @@ class Parsecsv extends React.Component {
 
   updateData(result) {
     var data = result.data;
-    console.log(data);
+    let date = data.map(({ date }) => date)
+    let shift = data.map(({ shift }) => shift)
+    let shiftReason = data.map(({ shiftReason }) => shiftReason)
+    let volunteerId = data.map(({ volunteerId }) => volunteerId)
+    let volunteerName = data.map(({ volunteerName }) => volunteerName)
+    console.log(date);
+    console.log(shift);
+    console.log(shiftReason);
+    console.log(volunteerId);
+    console.log(volunteerName);
+    
   }
 
   render() {
